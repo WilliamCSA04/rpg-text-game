@@ -14,16 +14,14 @@ pub struct Character {
 }
 
 impl Character {
-    pub fn deal_damage(&mut self, damage: i64) {
+    fn deal_damage(&mut self, damage: i64) {
         let pre_damage = damage - self.pr;
         let full_damage = if pre_damage < 0 { 0 } else { pre_damage };
-        let final_damage = self.hp - full_damage;
-        self.hp = final_damage;
-        println!(
-            "Damage dealt: {}; New HP: {}",
-            full_damage.to_string().red(),
-            final_damage.to_string().green()
-        )
+        let final_healthy = self.hp - full_damage;
+        if final_healthy < 1 {
+            self.healthy = HEALTHY::DEAD
+        }
+        self.hp = final_healthy;
     }
 }
 
