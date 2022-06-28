@@ -2,18 +2,30 @@ use colored::{ColoredString, Colorize};
 use rand::Rng;
 
 pub struct Character {
-    hp: u64,
-    mana: u64,
-    ad: u64,
-    ap: u64,
-    pr: u64,
-    mr: u64,
+    hp: i64,
+    mana: i64,
+    ad: i64,
+    ap: i64,
+    pr: i64,
+    mr: i64,
     name: ColoredString,
     class: CLASSES,
     healthy: HEALTHY,
 }
 
-impl Character {}
+impl Character {
+    pub fn deal_damage(&mut self, damage: i64) {
+        let pre_damage = damage - self.pr;
+        let full_damage = if pre_damage < 0 { 0 } else { pre_damage };
+        let final_damage = self.hp - full_damage;
+        self.hp = final_damage;
+        println!(
+            "Damage dealt: {}; New HP: {}",
+            full_damage.to_string().red(),
+            final_damage.to_string().green()
+        )
+    }
+}
 
 pub enum CLASSES {
     MAGE,
@@ -88,7 +100,7 @@ pub fn start() {
     let liw = build_mage();
     let myu = build_offtank();
     let misthy = build_archer();
-    let enemy = build_enemy();
+    let mut enemy = build_enemy();
     println!(
         "Characters party: {}, {}, {}",
         misthy.name, myu.name, liw.name
@@ -106,6 +118,7 @@ pub fn start() {
             println!("You won!");
             break;
         }
+        enemy.deal_damage(100);
     }
 }
 
